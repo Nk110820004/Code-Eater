@@ -1,0 +1,1734 @@
+use('codeeater')
+connection_string = 'mongodb://192.168.1.5:27017/codeeater'
+db = connect(connection_string)
+const { MongoClient } = require('mongodb');
+const uri = "mongodb://192.168.1.5:27017/codeeater";
+const client = new MongoClient(uri);
+
+db.users={
+    _id: ObjectId,
+    email: String,
+    password: String (hashed),
+    authType: String, // "local", "google", "facebook"
+    name: String,
+    aadharNumber: String, // for Indian identity verification
+    profilePhoto: String, // URL to photo
+    businessName: String,
+    address: {
+      street: String,
+      city: String,
+      state: String,
+      country: String,
+      pincode: String,
+      coordinates: [Number, Number]
+    },
+    companyNature: String, // "primary", "secondary", "tertiary", "quaternary", "quinary"
+    companyType: String, // domain/industry
+    targetAudience: {
+      ageRange: [Number, Number], // [min, max]
+      gender: String, // "male", "female", "all"
+      cities: [String],
+      otherDemographics: [String]
+    },
+    gstNumber: String,
+    companyStage: String, // "new", "upscale"
+    createdAt: Date,
+    lastLogin: Date
+  }
+  db.transactions={
+    _id: ObjectId,
+    userId: ObjectId,
+    transactionType: String, // "income", "expense", "investment"
+    amount: Number,
+    currency: String,
+    category: String,
+    description: String,
+    date: Date,
+    attachments: [String], // URLs to receipts/invoices
+    paymentMethod: String,
+    tags: [String],
+    relatedTo: String, // project or client name
+    reconciled: Boolean
+  }
+  db.financial_metrics={
+    _id: ObjectId,
+    userId: ObjectId,
+    period: String, // "daily", "weekly", "monthly", "quarterly", "yearly"
+    startDate: Date,
+    endDate: Date,
+    revenue: Number,
+    expenses: Number,
+    profit: Number,
+    cashFlow: Number,
+    roi: Number,
+    quickRatio: Number,
+    currentRatio: Number,
+    debtToEquity: Number,
+    inventoryTurnover: Number,
+    burnRate: Number,
+    breakEvenPoint: Number
+  }
+  db.inventory={
+    _id: ObjectId,
+    userId: ObjectId,
+    productName: String,
+    sku: String,
+    category: String,
+    quantity: Number,
+    costPrice: Number,
+    sellingPrice: Number,
+    reorderPoint: Number,
+    supplier: {
+      name: String,
+      contactInfo: String,
+      leadTime: Number // days
+    },
+    lastRestocked: Date,
+    expiryDate: Date,
+    location: String
+  }
+  db.customers={
+    _id: ObjectId,
+    userId: ObjectId,
+    name: String,
+    email: String,
+    phone: String,
+    address: {
+      street: String,
+      city: String,
+      state: String,
+      country: String,
+      postalCode: String
+    },
+    joinDate: Date,
+    totalPurchases: Number,
+    lifetimeValue: Number,
+    lastPurchaseDate: Date,
+    preferredPaymentMethod: String,
+    notes: String,
+    segment: String // "regular", "premium", "one-time"
+  }
+  db.market_insights={
+    _id: ObjectId,
+    userId: ObjectId,
+    industry: String,
+    region: String,
+    timestamp: Date,
+    trendData: {
+      growthRate: Number,
+      marketSize: Number,
+      competitorCount: Number,
+      averagePricing: Number,
+      consumerSentiment: Number // scale 1-10
+    },
+    topKeywords: [String],
+    opportunities: [String],
+    threats: [String],
+    seasonalFactors: [
+      {
+        season: String,
+        impact: String,
+        recommendedActions: [String]
+      }
+    ]
+  }
+  db.business_forecasts={
+    _id: ObjectId,
+    userId: ObjectId,
+    generatedDate: Date,
+    timeframe: String, // "monthly", "quarterly", "yearly"
+    forecastPeriod: {
+      start: Date,
+      end: Date
+    },
+    predictedRevenue: Number,
+    predictedExpenses: Number,
+    predictedProfit: Number,
+    growthProjection: Number,
+    confidenceScore: Number, // 0-1
+    recommendations: [String],
+    riskFactors: [
+      {
+        factor: String,
+        probability: Number, // 0-1
+        impact: String // "low", "medium", "high"
+      }
+    ],
+    scenarioAnalysis: {
+      bestCase: {
+        revenue: Number,
+        profit: Number
+      },
+      worstCase: {
+        revenue: Number,
+        profit: Number
+      }
+    }
+  }
+  db.government_schemes={
+    _id: ObjectId,
+    name: String,
+    description: String,
+    eligibility: [String],
+    benefits: [String],
+    applicationProcess: String,
+    deadlines: Date,
+    documentationRequired: [String],
+    region: [String], // applicable regions
+    industry: [String], // applicable industries
+    contactInfo: {
+      phone: String,
+      email: String,
+      website: String
+    }
+  }
+  db.feedback_analysis={
+    _id: ObjectId,
+    userId: ObjectId,
+    source: String, // "app", "social", "direct"
+    feedbackText: String,
+    date: Date,
+    sentiment: Number, // -1 to 1
+    topics: [String],
+    keywords: [String],
+    actionRequired: Boolean,
+    priority: String, // "low", "medium", "high"
+    status: String // "pending", "reviewed", "actioned"
+  }
+  db.business_reports={
+    _id: ObjectId,
+    userId: ObjectId,
+    reportType: String, // "financial", "market", "operational", "comprehensive"
+    generatedDate: Date,
+    period: {
+      start: Date,
+      end: Date
+    },
+    reportUrl: String, // where the report is stored
+    insights: [String],
+    keyMetrics: {
+      financialHealth: Number, // 0-100
+      marketPosition: Number, // 0-100
+      operationalEfficiency: Number // 0-100
+    },
+    recommendations: [
+      {
+        area: String,
+        suggestion: String,
+        expectedImpact: String
+      }
+    ]
+  }
+  db.suppliers={
+    _id: ObjectId,
+    name: String,
+    products: [String],
+    contactInfo: {
+      email: String,
+      phone: String,
+      website: String
+    },
+    address: {
+      street: String,
+      city: String,
+      state: String,
+      country: String
+    },
+    rating: Number, // 1-5
+    leadTime: Number, // average days
+    minimumOrderValue: Number,
+    paymentTerms: String,
+    industries: [String],
+    verified: Boolean
+  }
+db.capital_investments={
+    _id: ObjectId,
+    userId: ObjectId,
+    investmentType: String, // "bootstrap", "loan", "external", "personal"
+    amount: Number,
+    date: Date,
+    description: String,
+    source: String, // for external investments
+    interestRate: Number, // for loans
+    returnExpectedDate: Date, // when applicable
+    documents: [String], // URLs to investment documents
+    tags: [String],
+    status: String // "active", "returned", "written-off"
+  }
+  db.business_milestones={_id: ObjectId,
+    userId: ObjectId,
+    milestoneName: String,
+    description: String,
+    targetDate: Date,
+    completedDate: Date,
+    status: String, // "pending", "in-progress", "completed", "delayed"
+    metrics: {
+      revenueTarget: Number,
+      customerTarget: Number,
+      otherTargets: Object
+    },
+    celebrationType: String, // how the team celebrated this milestone
+    notes: String,
+    attachments: [String]
+  }
+  db.marketing_collaborations={
+    _id: ObjectId,
+    userId: ObjectId,
+    collaborationType: String, // "socialMediaMarketing", "brandBuilding", "logoCreation", "promotion"
+    partnerName: String,
+    contactInfo: {
+      email: String,
+      phone: String,
+      website: String
+    },
+    status: String, // "offered", "negotiating", "active", "completed", "rejected"
+    cost: Number,
+    startDate: Date,
+    endDate: Date,
+    expectedROI: Number,
+    actualROI: Number,
+    notes: String,
+    agreements: [String], // URLs to documents
+    testimonials: String
+  }
+  db.location_analysis={
+    _id: ObjectId,
+    userId: ObjectId,
+    locationName: String,
+    coordinates: [Number, Number], // [longitude, latitude]
+    analysis: {
+      populationDensity: Number,
+      competitorCount: Number,
+      footfallEstimate: Number,
+      rentalCostEstimate: {
+        min: Number,
+        max: Number,
+        currency: String
+      },
+      successProbability: Number, // 0-1, from ML model
+      historicalFailureRate: Number // 0-1
+    },
+    nearbyBusinesses: [
+      {
+        type: String,
+        count: Number,
+        averageRating: Number
+      }
+    ],
+    infrastructureRating: Number, // 1-10
+    recommendations: [String],
+    warnings: [String]
+  }
+  db.restocking_alerts={
+    _id: ObjectId,
+    userId: ObjectId,
+    itemId: ObjectId, // reference to inventory item
+    alertDate: Date,
+    currentStock: Number,
+    reorderThreshold: Number,
+    recommendedOrderQuantity: Number,
+    urgencyLevel: String, // "low", "medium", "high", "critical"
+    historicalUsageRate: Number, // units per day/week
+    seasonalFactors: {
+      isSeasonal: Boolean,
+      peakPeriod: String,
+      adjustmentFactor: Number
+    },
+    status: String, // "pending", "acknowledged", "ordered", "resolved"
+    supplierRecommendations: [ObjectId] // reference to suppliers
+  }
+  db.customer_feedback={
+    _id: ObjectId,
+    userId: ObjectId,
+    source: String, // "app", "social", "direct", "website"
+    feedbackText: String,
+    date: Date,
+    customer: {
+      name: String,
+      contactInfo: String,
+      isRegular: Boolean
+    },
+    nlpAnalysis: {
+      sentiment: Number, // -1 to 1
+      topics: [String],
+      keywords: [String],
+      entities: [String],
+      actionableInsights: [String]
+    },
+    responseStatus: String, // "pending", "responded", "closed"
+    responseText: String,
+    responsibleTeamMember: String,
+    followUpDate: Date
+  }
+  db.legal_compliance={
+    _id: ObjectId,
+    userId: ObjectId,
+    complianceType: String, // "tax", "labor", "environmental", "industry-specific"
+    name: String,
+    description: String,
+    deadline: Date,
+    recurrence: String, // "monthly", "quarterly", "annually", "one-time"
+    status: String, // "pending", "in-progress", "completed", "overdue"
+    documents: [String], // URLs to compliance documents
+    responsiblePerson: String,
+    reminders: [Date],
+    penalties: String, // description of penalties if not complied
+    notes: String
+  }
+  db.items_tracker={
+    _id: ObjectId,
+    userId: ObjectId,
+    itemName: String,
+    category: String,
+    amount: Number,
+    currency: String,
+    date: Date,
+    transactionType: String, // "income", "expense"
+    paymentMethod: String,
+    attachments: [String], // receipts, etc.
+    tags: [String],
+    notes: String,
+    recurringEntry: Boolean,
+    recurringFrequency: String // if applicable
+  }
+  // LEGAL COMPLIANCE TABLE
+db.createCollection("legalCompliance", {
+    validator: {
+      $jsonSchema: {
+        bsonType: "object",
+        required: ["complianceType", "description", "applicableIndustries", "dueDate", "status", "documents"],
+        properties: {
+          complianceType: {
+            bsonType: "string",
+            description: "Type of legal compliance (Tax Filing, Labor Law, Environmental, etc.)"
+          },
+          description: {
+            bsonType: "string",
+            description: "Detailed description of the compliance requirement"
+          },
+          applicableIndustries: {
+            bsonType: "array",
+            items: {
+              bsonType: "string"
+            },
+            description: "Industries this compliance applies to"
+          },
+          dueDate: {
+            bsonType: "date",
+            description: "When compliance must be completed by"
+          },
+          status: {
+            enum: ["Pending", "In Progress", "Completed", "Overdue"],
+            description: "Current status of compliance"
+          },
+          penalty: {
+            bsonType: "string",
+            description: "Penalty for non-compliance"
+          },
+          documents: {
+            bsonType: "array",
+            items: {
+              bsonType: "object",
+              required: ["documentName", "fileId"],
+              properties: {
+                documentName: {
+                  bsonType: "string",
+                  description: "Name of the document"
+                },
+                fileId: {
+                  bsonType: "objectId",
+                  description: "Reference to GridFS for document image"
+                },
+                uploadDate: {
+                  bsonType: "date",
+                  description: "When the document was uploaded"
+                },
+                verificationStatus: {
+                  enum: ["Pending", "Verified", "Rejected"],
+                  description: "Verification status of the document"
+                }
+              }
+            }
+          },
+          reminderDays: {
+            bsonType: "int",
+            description: "Days before due date to send reminder"
+          },
+          authority: {
+            bsonType: "string",
+            description: "Governing authority for this compliance"
+          },
+          complianceScore: {
+            bsonType: "int",
+            minimum: 0,
+            maximum: 100,
+            description: "Overall compliance score (0-100)"
+          }
+        }
+      }
+    }
+  });
+  
+  // SOCIAL MEDIA MARKETING & BRAND BUILDING OFFERS TABLE
+  db.createCollection("marketingOffers", {
+    validator: {
+      $jsonSchema: {
+        bsonType: "object",
+        required: ["vendorName", "offerTitle", "description", "priceRange", "serviceType", "minimumProfitRequired", "portfolio"],
+        properties: {
+          vendorName: {
+            bsonType: "string",
+            description: "Name of the marketing vendor"
+          },
+          offerTitle: {
+            bsonType: "string",
+            description: "Title of the marketing offer"
+          },
+          description: {
+            bsonType: "string",
+            description: "Detailed description of services offered"
+          },
+          priceRange: {
+            bsonType: "object",
+            required: ["minimum", "maximum", "currency"],
+            properties: {
+              minimum: {
+                bsonType: "double",
+                description: "Minimum price"
+              },
+              maximum: {
+                bsonType: "double",
+                description: "Maximum price"
+              },
+              currency: {
+                bsonType: "string",
+                description: "Currency code"
+              }
+            }
+          },
+          serviceType: {
+            enum: ["Social Media Management", "Content Creation", "Paid Advertising", "Influencer Marketing", "SEO", "Email Marketing", "Brand Strategy"],
+            description: "Type of marketing service"
+          },
+          targetAudience: {
+            bsonType: "array",
+            items: {
+              bsonType: "string"
+            },
+            description: "Target audience for this marketing service"
+          },
+          minimumProfitRequired: {
+            bsonType: "double",
+            description: "Minimum business profit recommended for this service"
+          },
+          portfolio: {
+            bsonType: "array",
+            items: {
+              bsonType: "object",
+              required: ["title", "imageId"],
+              properties: {
+                title: {
+                  bsonType: "string",
+                  description: "Title of portfolio item"
+                },
+                imageId: {
+                  bsonType: "objectId",
+                  description: "Reference to GridFS for portfolio image"
+                },
+                description: {
+                  bsonType: "string",
+                  description: "Description of the portfolio item"
+                },
+                results: {
+                  bsonType: "string",
+                  description: "Results achieved for this portfolio item"
+                }
+              }
+            }
+          },
+          reviews: {
+            bsonType: "array",
+            items: {
+              bsonType: "object",
+              required: ["rating", "comment"],
+              properties: {
+                rating: {
+                  bsonType: "int",
+                  minimum: 1,
+                  maximum: 5,
+                  description: "Rating from 1-5"
+                },
+                comment: {
+                  bsonType: "string",
+                  description: "Review comment"
+                },
+                businessName: {
+                  bsonType: "string",
+                  description: "Name of business providing review"
+                }
+              }
+            }
+          },
+          contactInfo: {
+            bsonType: "object",
+            required: ["email", "phone"],
+            properties: {
+              email: {
+                bsonType: "string",
+                description: "Contact email"
+              },
+              phone: {
+                bsonType: "string",
+                description: "Contact phone number"
+              },
+              website: {
+                bsonType: "string",
+                description: "Vendor website"
+              }
+            }
+          },
+          availability: {
+            bsonType: "string",
+            description: "Current availability of the vendor"
+          }
+        }
+      }
+    }
+  });
+  
+  // LOGO CREATION & PROMOTION CLIENTS TABLE
+  db.createCollection("designClients", {
+    validator: {
+      $jsonSchema: {
+        bsonType: "object",
+        required: ["clientName", "serviceType", "priceRange", "minimumProfitRequired", "portfolio"],
+        properties: {
+          clientName: {
+            bsonType: "string",
+            description: "Name of the design client/vendor"
+          },
+          serviceType: {
+            enum: ["Logo Design", "Brand Identity", "Packaging Design", "Print Materials", "Digital Assets", "Full Brand Package"],
+            description: "Type of design service"
+          },
+          priceRange: {
+            bsonType: "object",
+            required: ["minimum", "maximum", "currency"],
+            properties: {
+              minimum: {
+                bsonType: "double",
+                description: "Minimum price"
+              },
+              maximum: {
+                bsonType: "double",
+                description: "Maximum price"
+              },
+              currency: {
+                bsonType: "string",
+                description: "Currency code"
+              }
+            }
+          },
+          minimumProfitRequired: {
+            bsonType: "double",
+            description: "Minimum business profit recommended for this service"
+          },
+          portfolio: {
+            bsonType: "array",
+            items: {
+              bsonType: "object",
+              required: ["projectName", "imageId"],
+              properties: {
+                projectName: {
+                  bsonType: "string",
+                  description: "Name of the portfolio project"
+                },
+                imageId: {
+                  bsonType: "objectId",
+                  description: "Reference to GridFS for portfolio image"
+                },
+                clientIndustry: {
+                  bsonType: "string",
+                  description: "Industry of the client for this portfolio item"
+                },
+                description: {
+                  bsonType: "string",
+                  description: "Description of the project"
+                }
+              }
+            }
+          },
+          expertise: {
+            bsonType: "array",
+            items: {
+              bsonType: "string"
+            },
+            description: "Areas of expertise"
+          },
+          turnaroundTime: {
+            bsonType: "string",
+            description: "Typical turnaround time"
+          },
+          reviews: {
+            bsonType: "array",
+            items: {
+              bsonType: "object",
+              required: ["rating", "comment"],
+              properties: {
+                rating: {
+                  bsonType: "int",
+                  minimum: 1,
+                  maximum: 5,
+                  description: "Rating from 1-5"
+                },
+                comment: {
+                  bsonType: "string",
+                  description: "Review comment"
+                },
+                businessName: {
+                  bsonType: "string",
+                  description: "Name of business providing review"
+                }
+              }
+            }
+          },
+          contactInfo: {
+            bsonType: "object",
+            required: ["email"],
+            properties: {
+              email: {
+                bsonType: "string",
+                description: "Contact email"
+              },
+              phone: {
+                bsonType: "string",
+                description: "Contact phone number"
+              },
+              website: {
+                bsonType: "string",
+                description: "Designer website"
+              }
+            }
+          },
+          currentAvailability: {
+            bsonType: "string",
+            description: "Current availability status"
+          }
+        }
+      }
+    }
+  });
+  
+  // GRIDFS SETUP FOR IMAGE STORAGE
+  // This allows storage of image files larger than the 16MB BSON document limit
+  
+  // Create GridFS bucket for storing images
+  const imagesBucket = new mongoose.mongo.GridFSBucket(db, {
+    bucketName: 'businessImages'
+  });
+  
+  // Function to store an image
+  function storeImage(filePath, metadata) {
+    return new Promise((resolve, reject) => {
+      const readStream = fs.createReadStream(filePath);
+      const uploadStream = imagesBucket.openUploadStream(
+        path.basename(filePath),
+        { metadata: metadata }
+      );
+      
+      readStream
+        .pipe(uploadStream)
+        .on('error', reject)
+        .on('finish', () => {
+          resolve(uploadStream.id);
+        });
+    });
+  }
+  
+  // Function to retrieve an image
+  function retrieveImage(fileId, destinationPath) {
+    return new Promise((resolve, reject) => {
+      const downloadStream = imagesBucket.openDownloadStream(fileId);
+      const writeStream = fs.createWriteStream(destinationPath);
+      
+      downloadStream
+        .pipe(writeStream)
+        .on('error', reject)
+        .on('finish', resolve);
+    });
+  }
+  
+  // Example image upload implementation
+  async function uploadComplianceDocument(complianceId, documentPath, documentName) {
+    try {
+      // Store image in GridFS
+      const fileId = await storeImage(documentPath, {
+        documentName: documentName,
+        complianceId: complianceId,
+        uploadDate: new Date(),
+        type: 'compliance_document'
+      });
+      
+      // Update compliance record with the file reference
+      await db.collection('legalCompliance').updateOne(
+        { _id: ObjectId(complianceId) },
+        { 
+          $push: { 
+            documents: {
+              documentName: documentName,
+              fileId: fileId,
+              uploadDate: new Date(),
+              verificationStatus: 'Pending'
+            } 
+          } 
+        }
+      );
+      
+      return fileId;
+    } catch (error) {
+      console.error("Error uploading compliance document:", error);
+      throw error;
+    }
+  }
+  
+  // Example function to recommend marketing offers based on profit
+  async function recommendMarketingOffers(businessProfit) {
+    try {
+      const recommendations = await db.collection('marketingOffers').find({
+        minimumProfitRequired: { $lte: businessProfit }
+      }).sort({
+        minimumProfitRequired: -1  // Sort by highest value services first
+      }).limit(5).toArray();
+      
+      return recommendations;
+    } catch (error) {
+      console.error("Error recommending marketing offers:", error);
+      throw error;
+    }
+  }
+  
+  // Example function to recommend design clients based on profit
+  async function recommendDesignClients(businessProfit) {
+    try {
+      const recommendations = await db.collection('designClients').find({
+        minimumProfitRequired: { $lte: businessProfit }
+      }).sort({
+        minimumProfitRequired: -1  // Sort by highest value services first
+      }).limit(5).toArray();
+      
+      return recommendations;
+    } catch (error) {
+      console.error("Error recommending design clients:", error);
+      throw error;
+    }
+  }
+  // Supabase configuration (you'll need to set this up in your application)
+// const supabaseUrl = 'YOUR_SUPABASE_URL';
+// const supabaseKey = 'YOUR_SUPABASE_KEY';
+// const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Digital Marketing Collection
+db.createCollection("digitalMarketing");
+db.digitalMarketing.insertMany([
+  {
+    name: "hemnaat",
+    description: "Good in videography and has over 100k follower base",
+    // Using Supabase storage URL pattern
+    imageUrl: "storage/v1/object/public/marketing-images/digital-marketing/hemnaat.png",
+    // You can store the bucket path for easier reference
+    imageBucket: "marketing-images",
+    imageFolder: "digital-marketing",
+    imageFileName: "hemnaat.png",
+    price: 5000.00,
+    category: "Digital_Marketing",
+    availableAddons: [
+      { name: "cinematic", price: 100.00 },
+      { name: "grand", price: 10000.00 },
+      { name: "repeatations", price: 100.00 }
+    ]
+  },
+  {
+    name: "sneha",
+    description: "Content strategist with viral Instagram reels",
+    imageUrl: "storage/v1/object/public/marketing-images/digital-marketing/sneha.png",
+    imageBucket: "marketing-images",
+    imageFolder: "digital-marketing",
+    imageFileName: "sneha.png",
+    price: 4000.00,
+    category: "Digital_Marketing",
+    availableAddons: [
+      { name: "SEO boost", price: 500.00 },
+      { name: "ad copy", price: 200.00 },
+      { name: "thumbnail design", price: 150.00 }
+    ]
+  },
+  {
+    name: "arjun",
+    description: "Performance marketer with expertise in Meta ads",
+    imageUrl: "storage/v1/object/public/marketing-images/digital-marketing/arjun.png",
+    imageBucket: "marketing-images",
+    imageFolder: "digital-marketing",
+    imageFileName: "arjun.png",
+    price: 6000.00,
+    category: "Digital_Marketing",
+    availableAddons: [
+      { name: "ad analytics", price: 400.00 },
+      { name: "funnel setup", price: 1000.00 }
+    ]
+  },
+  {
+    name: "isha",
+    description: "YouTube growth expert and content planner",
+    imageUrl: "storage/v1/object/public/marketing-images/digital-marketing/isha.png",
+    imageBucket: "marketing-images",
+    imageFolder: "digital-marketing",
+    imageFileName: "isha.png",
+    price: 5500.00,
+    category: "Digital_Marketing",
+    availableAddons: [
+      { name: "channel audit", price: 300.00 },
+      { name: "video scripts", price: 250.00 }
+    ]
+  },
+  {
+    name: "karan",
+    description: "Expert in influencer and affiliate campaigns",
+    imageUrl: "storage/v1/object/public/marketing-images/digital-marketing/karan.png",
+    imageBucket: "marketing-images",
+    imageFolder: "digital-marketing",
+    imageFileName: "karan.png",
+    price: 7000.00,
+    category: "Digital_Marketing",
+    availableAddons: [
+      { name: "influencer brief", price: 350.00 },
+      { name: "tracking system", price: 600.00 }
+    ]
+  }
+]);
+
+// Traditional Marketing Collection
+db.createCollection("traditionalMarketing");
+db.traditionalMarketing.insertMany([
+  {
+    name: "anjali",
+    description: "Skilled in newspaper and billboard campaigns",
+    imageUrl: "storage/v1/object/public/marketing-images/traditional-marketing/anjali.png",
+    imageBucket: "marketing-images",
+    imageFolder: "traditional-marketing",
+    imageFileName: "anjali.png",
+    price: 3000.00,
+    category: "Traditional_Marketing",
+    availableAddons: [
+      { name: "print boost", price: 500.00 },
+      { name: "extra coverage", price: 1000.00 },
+      { name: "flyers", price: 200.00 }
+    ]
+  },
+  {
+    name: "dev",
+    description: "Expert in local TV and radio promotions",
+    imageUrl: "storage/v1/object/public/marketing-images/traditional-marketing/dev.png",
+    imageBucket: "marketing-images",
+    imageFolder: "traditional-marketing",
+    imageFileName: "dev.png",
+    price: 4000.00,
+    category: "Traditional_Marketing",
+    availableAddons: [
+      { name: "voiceover", price: 300.00 },
+      { name: "broadcast boost", price: 700.00 }
+    ]
+  },
+  {
+    name: "kavita",
+    description: "Poster and hoarding campaign expert",
+    imageUrl: "storage/v1/object/public/marketing-images/traditional-marketing/kavita.png",
+    imageBucket: "marketing-images",
+    imageFolder: "traditional-marketing",
+    imageFileName: "kavita.png",
+    price: 2800.00,
+    category: "Traditional_Marketing",
+    availableAddons: [
+      { name: "design support", price: 200.00 },
+      { name: "printing service", price: 500.00 }
+    ]
+  },
+  {
+    name: "sathish",
+    description: "Regional newspaper outreach specialist",
+    imageUrl: "storage/v1/object/public/marketing-images/traditional-marketing/sathish.png",
+    imageBucket: "marketing-images",
+    imageFolder: "traditional-marketing",
+    imageFileName: "sathish.png",
+    price: 3500.00,
+    category: "Traditional_Marketing",
+    availableAddons: [
+      { name: "editorial write-up", price: 1000.00 },
+      { name: "translation", price: 300.00 }
+    ]
+  },
+  {
+    name: "riya",
+    description: "Offline brand promotions and print ads",
+    imageUrl: "storage/v1/object/public/marketing-images/traditional-marketing/riya.png",
+    imageBucket: "marketing-images",
+    imageFolder: "traditional-marketing",
+    imageFileName: "riya.png",
+    price: 3700.00,
+    category: "Traditional_Marketing",
+    availableAddons: [
+      { name: "color ad", price: 250.00 },
+      { name: "front page placement", price: 900.00 }
+    ]
+  }
+]);
+
+// Direct Marketing Collection
+db.createCollection("directMarketing");
+db.directMarketing.insertMany([
+  {
+    name: "rohit",
+    description: "Expert in door-to-door and pamphlet distribution",
+    imageUrl: "storage/v1/object/public/marketing-images/direct-marketing/rohit.png",
+    imageBucket: "marketing-images",
+    imageFolder: "direct-marketing",
+    imageFileName: "rohit.png",
+    price: 2500.00,
+    category: "Direct_Marketing",
+    availableAddons: [
+      { name: "custom flyers", price: 150.00 },
+      { name: "area targeting", price: 500.00 },
+      { name: "follow-ups", price: 300.00 }
+    ]
+  },
+  {
+    name: "neha",
+    description: "Direct mail and SMS campaign specialist",
+    imageUrl: "storage/v1/object/public/marketing-images/direct-marketing/neha.png",
+    imageBucket: "marketing-images",
+    imageFolder: "direct-marketing",
+    imageFileName: "neha.png",
+    price: 2800.00,
+    category: "Direct_Marketing",
+    availableAddons: [
+      { name: "sms pack", price: 400.00 },
+      { name: "email templates", price: 350.00 }
+    ]
+  },
+  {
+    name: "vinay",
+    description: "Cold calling expert for local lead generation",
+    imageUrl: "storage/v1/object/public/marketing-images/direct-marketing/vinay.png",
+    imageBucket: "marketing-images",
+    imageFolder: "direct-marketing",
+    imageFileName: "vinay.png",
+    price: 3000.00,
+    category: "Direct_Marketing",
+    availableAddons: [
+      { name: "script writing", price: 200.00 },
+      { name: "telecaller", price: 1000.00 }
+    ]
+  },
+  {
+    name: "juhi",
+    description: "Pamphlet design and house delivery campaigns",
+    imageUrl: "storage/v1/object/public/marketing-images/direct-marketing/juhi.png",
+    imageBucket: "marketing-images",
+    imageFolder: "direct-marketing",
+    imageFileName: "juhi.png",
+    price: 2700.00,
+    category: "Direct_Marketing",
+    availableAddons: [
+      { name: "color print", price: 250.00 },
+      { name: "multi-area drop", price: 500.00 }
+    ]
+  },
+  {
+    name: "rajeev",
+    description: "WhatsApp and Email-based direct marketing expert",
+    imageUrl: "storage/v1/object/public/marketing-images/direct-marketing/rajeev.png",
+    imageBucket: "marketing-images",
+    imageFolder: "direct-marketing",
+    imageFileName: "rajeev.png",
+    price: 2900.00,
+    category: "Direct_Marketing",
+    availableAddons: [
+      { name: "bulk messaging", price: 600.00 },
+      { name: "auto-responder", price: 400.00 }
+    ]
+  }
+]);
+
+// Experiential Marketing Collection
+db.createCollection("experientialMarketing");
+db.experientialMarketing.insertMany([
+  {
+    name: "kiara",
+    description: "Creates memorable event-based brand experiences",
+    imageUrl: "storage/v1/object/public/marketing-images/experiential-marketing/kiara.png",
+    imageBucket: "marketing-images",
+    imageFolder: "experiential-marketing",
+    imageFileName: "kiara.png",
+    price: 8000.00,
+    category: "Experiential_Marketing",
+    availableAddons: [
+      { name: "venue setup", price: 3000.00 },
+      { name: "live coverage", price: 1500.00 },
+      { name: "celebrity guest", price: 5000.00 }
+    ]
+  },
+  {
+    name: "amit",
+    description: "Immersive marketing with VR & AR demos",
+    imageUrl: "storage/v1/object/public/marketing-images/experiential-marketing/amit.png",
+    imageBucket: "marketing-images",
+    imageFolder: "experiential-marketing",
+    imageFileName: "amit.png",
+    price: 10000.00,
+    category: "Experiential_Marketing",
+    availableAddons: [
+      { name: "virtual stage", price: 2000.00 },
+      { name: "custom headset", price: 3000.00 }
+    ]
+  },
+  {
+    name: "laila",
+    description: "Creates themed pop-up events and brand activations",
+    imageUrl: "storage/v1/object/public/marketing-images/experiential-marketing/laila.png",
+    imageBucket: "marketing-images",
+    imageFolder: "experiential-marketing",
+    imageFileName: "laila.png",
+    price: 9000.00,
+    category: "Experiential_Marketing",
+    availableAddons: [
+      { name: "popup booth", price: 2500.00 },
+      { name: "branding materials", price: 1500.00 }
+    ]
+  },
+  {
+    name: "mohan",
+    description: "Festival and concert brand engagement specialist",
+    imageUrl: "storage/v1/object/public/marketing-images/experiential-marketing/mohan.png",
+    imageBucket: "marketing-images",
+    imageFolder: "experiential-marketing",
+    imageFileName: "mohan.png",
+    price: 9500.00,
+    category: "Experiential_Marketing",
+    availableAddons: [
+      { name: "stage banners", price: 1000.00 },
+      { name: "MC announcement", price: 500.00 }
+    ]
+  },
+  {
+    name: "diya",
+    description: "Product sampling and interactive demo campaigns",
+    imageUrl: "storage/v1/object/public/marketing-images/experiential-marketing/diya.png",
+    imageBucket: "marketing-images",
+    imageFolder: "experiential-marketing",
+    imageFileName: "diya.png",
+    price: 8700.00,
+    category: "Experiential_Marketing",
+    availableAddons: [
+      { name: "sample packs", price: 600.00 },
+      { name: "demo staff", price: 800.00 }
+    ]
+  }
+]);
+
+// B2B Marketing Collection
+db.createCollection("b2bMarketing");
+db.b2bMarketing.insertMany([
+  {
+    name: "naveen",
+    description: "Expert in corporate outreach and networking",
+    imageUrl: "storage/v1/object/public/marketing-images/b2b-marketing/naveen.png",
+    imageBucket: "marketing-images",
+    imageFolder: "b2b-marketing",
+    imageFileName: "naveen.png",
+    price: 7000.00,
+    category: "B2B_Marketing",
+    availableAddons: [
+      { name: "email funnel", price: 600.00 },
+      { name: "lead magnet", price: 800.00 }
+    ]
+  },
+  {
+    name: "shruti",
+    description: "LinkedIn campaigns and CRM integration specialist",
+    imageUrl: "storage/v1/object/public/marketing-images/b2b-marketing/shruti.png",
+    imageBucket: "marketing-images",
+    imageFolder: "b2b-marketing",
+    imageFileName: "shruti.png",
+    price: 7200.00,
+    category: "B2B_Marketing",
+    availableAddons: [
+      { name: "automation setup", price: 1000.00 },
+      { name: "CRM dashboard", price: 1500.00 }
+    ]
+  },
+  {
+    name: "sanjay",
+    description: "Expert in trade shows and B2B conventions",
+    imageUrl: "storage/v1/object/public/marketing-images/b2b-marketing/sanjay.png",
+    imageBucket: "marketing-images",
+    imageFolder: "b2b-marketing",
+    imageFileName: "sanjay.png",
+    price: 8000.00,
+    category: "B2B_Marketing",
+    availableAddons: [
+      { name: "event collateral", price: 700.00 },
+      { name: "booth design", price: 1200.00 }
+    ]
+  },
+  {
+    name: "reena",
+    description: "Partnership and business alliance creator",
+    imageUrl: "storage/v1/object/public/marketing-images/b2b-marketing/reena.png",
+    imageBucket: "marketing-images",
+    imageFolder: "b2b-marketing",
+    imageFileName: "reena.png",
+    price: 7600.00,
+    category: "B2B_Marketing",
+    availableAddons: [
+      { name: "partnership proposal", price: 500.00 },
+      { name: "collab pitch deck", price: 900.00 }
+    ]
+  },
+  {
+    name: "yusuf",
+    description: "Cold outreach and enterprise sales funnel expert",
+    imageUrl: "storage/v1/object/public/marketing-images/b2b-marketing/yusuf.png",
+    imageBucket: "marketing-images",
+    imageFolder: "b2b-marketing",
+    imageFileName: "yusuf.png",
+    price: 7800.00,
+    category: "B2B_Marketing",
+    availableAddons: [
+      { name: "B2B calling script", price: 300.00 },
+      { name: "email sequences", price: 600.00 }
+    ]
+  }
+]);
+
+// B2C Marketing Collection
+db.createCollection("b2cMarketing");
+db.b2cMarketing.insertMany([
+  {
+    name: "meera",
+    description: "Expert in online retail and customer outreach",
+    imageUrl: "storage/v1/object/public/marketing-images/b2c-marketing/meera.png",
+    imageBucket: "marketing-images",
+    imageFolder: "b2c-marketing",
+    imageFileName: "meera.png",
+    price: 5000.00,
+    category: "B2C_Marketing",
+    availableAddons: [
+      { name: "sales copy", price: 400.00 },
+      { name: "coupon design", price: 300.00 }
+    ]
+  },
+  {
+    name: "tanya",
+    description: "Instagram and Facebook shopper funnel strategist",
+    imageUrl: "storage/v1/object/public/marketing-images/b2c-marketing/tanya.png",
+    imageBucket: "marketing-images",
+    imageFolder: "b2c-marketing",
+    imageFileName: "tanya.png",
+    price: 4800.00,
+    category: "B2C_Marketing",
+    availableAddons: [
+      { name: "carousel ad", price: 250.00 },
+      { name: "highlight set", price: 200.00 }
+    ]
+  },
+  {
+    name: "vikram",
+    description: "Loyalty programs and app installs specialist",
+    imageUrl: "storage/v1/object/public/marketing-images/b2c-marketing/vikram.png",
+    imageBucket: "marketing-images",
+    imageFolder: "b2c-marketing",
+    imageFileName: "vikram.png",
+    price: 5300.00,
+    category: "B2C_Marketing",
+    availableAddons: [
+      { name: "reward system", price: 800.00 },
+      { name: "push notifications", price: 500.00 }
+    ]
+  },
+  {
+    name: "simran",
+    description: "Festive offer campaign and WhatsApp deals expert",
+    imageUrl: "storage/v1/object/public/marketing-images/b2c-marketing/simran.png",
+    imageBucket: "marketing-images",
+    imageFolder: "b2c-marketing",
+    imageFileName: "simran.png",
+    price: 5200.00,
+    category: "B2C_Marketing",
+    availableAddons: [
+      { name: "festival pack", price: 700.00 },
+      { name: "status promo", price: 300.00 }
+    ]
+  },
+  {
+    name: "akash",
+    description: "E-commerce sales and influencer tie-up specialist",
+    imageUrl: "storage/v1/object/public/marketing-images/b2c-marketing/akash.png",
+    imageBucket: "marketing-images",
+    imageFolder: "b2c-marketing",
+    imageFileName: "akash.png",
+    price: 5400.00,
+    category: "B2C_Marketing",
+    availableAddons: [
+      { name: "product unboxing", price: 600.00 },
+      { name: "giveaway", price: 500.00 }
+    ]
+  }
+]);
+
+// Niche Marketing Collection (from your example)
+db.createCollection("nicheMarketing");
+db.nicheMarketing.insertMany([
+  {
+    name: "tarun",
+    description: "Expert in micro-market campaigns and precision ads",
+    imageUrl: "storage/v1/object/public/marketing-images/niche-marketing/tarun.png",
+    imageBucket: "marketing-images",
+    imageFolder: "niche-marketing",
+    imageFileName: "tarun.png",
+    price: 6000.00,
+    category: "Niche_Marketing",
+    availableAddons: [
+      { name: "hyperlocal reach", price: 400.00 },
+      { name: "niche branding kit", price: 700.00 }
+    ]
+  },
+  {
+    name: "sona",
+    description: "Custom marketing for specific cultural groups",
+    imageUrl: "storage/v1/object/public/marketing-images/niche-marketing/sona.png",
+    imageBucket: "marketing-images",
+    imageFolder: "niche-marketing",
+    imageFileName: "sona.png",
+    price: 6200.00,
+    category: "Niche_Marketing",
+    availableAddons: [
+      { name: "language variant", price: 300.00 },
+      { name: "cultural design", price: 500.00 }
+    ]
+  },
+  {
+    name: "raghav",
+    description: "Targeted ads for gamer and tech communities",
+    imageUrl: "storage/v1/object/public/marketing-images/niche-marketing/raghav.png",
+    imageBucket: "marketing-images",
+    imageFolder: "niche-marketing",
+    imageFileName: "raghav.png",
+    price: 6500.00,
+    category: "Niche_Marketing",
+    availableAddons: [
+      { name: "Discord promo", price: 400.00 },
+      { name: "Twitch overlay", price: 350.00 }
+    ]
+  },
+  {
+    name: "maya",
+    description: "Marketing for sustainable and eco brands",
+    imageUrl: "storage/v1/object/public/marketing-images/niche-marketing/maya.png",
+    imageBucket: "marketing-images",
+    imageFolder: "niche-marketing",
+    imageFileName: "maya.png",
+    price: 6300.00,
+    category: "Niche_Marketing",
+    availableAddons: [
+      { name: "green branding", price: 600.00 },
+      { name: "eco packaging visuals", price: 500.00 }
+    ]
+  },
+  {
+    name: "devika",
+    description: "Luxury and high-ticket product marketing expert",
+    imageUrl: "storage/v1/object/public/marketing-images/niche-marketing/devika.png",
+    imageBucket: "marketing-images",
+    imageFolder: "niche-marketing",
+    imageFileName: "devika.png",
+    price: 6800.00,
+    category: "Niche_Marketing",
+    availableAddons: [
+      { name: "exclusive launch", price: 1000.00 },
+      { name: "premium design", price: 800.00 }
+    ]
+  }
+]);
+
+async function run() {
+    try {
+      await client.connect();
+      console.log("Connected to MongoDB");
+      
+      const database = client.db("businessBloomDB");
+      const businessCollection = database.collection("businesses");
+      
+      // Create an index for faster queries
+      await businessCollection.createIndex({ businessType: 1 });
+      await businessCollection.createIndex({ yearStarted: 1 });
+      
+      // Create a schema validation
+      await database.command({
+        collMod: "businesses",
+        validator: {
+          $jsonSchema: {
+            bsonType: "object",
+            required: ["businessType", "initialInvestment", "initialTeamSize", "location", 
+                       "founderExperience", "initialMarketingBudget", "industryGrowthRate", 
+                       "economicConditionsAtStart", "yearStarted", "customerAcquisitionRate", 
+                       "timeToBloom"],
+            properties: {
+              businessType: {
+                bsonType: "string",
+                description: "Business type/category (e.g., Retail, SaaS, Service-based)"
+              },
+              initialInvestment: {
+                bsonType: "double",
+                description: "Initial investment amount in USD"
+              },
+              initialTeamSize: {
+                bsonType: "int",
+                description: "Team size at the start of the business"
+              },
+              location: {
+                bsonType: "string",
+                description: "Location (urban/rural/metro or specific city name)"
+              },
+              founderExperience: {
+                bsonType: "int",
+                description: "Founder experience in years"
+              },
+              initialMarketingBudget: {
+                bsonType: "double",
+                description: "Initial marketing budget in USD"
+              },
+              industryGrowthRate: {
+                bsonType: "double",
+                description: "Industry growth rate as a percentage"
+              },
+              economicConditionsAtStart: {
+                bsonType: "string",
+                description: "Economic conditions when the business started (e.g., recession, growth, stable)"
+              },
+              yearStarted: {
+                bsonType: "int",
+                description: "Year when the business was started"
+              },
+              customerAcquisitionRate: {
+                bsonType: "double",
+                description: "Customer acquisition rate in early months (customers per month)"
+              },
+              timeToBloom: {
+                bsonType: "double",
+                description: "Time taken for the business to bloom/succeed in months"
+              }
+            }
+          }
+        }
+      });
+  
+      // Insert sample data
+      const sampleBusinesses = [
+        {
+          businessType: "SaaS",
+          initialInvestment: 150000.0,
+          initialTeamSize: 3,
+          location: "San Francisco",
+          founderExperience: 8,
+          initialMarketingBudget: 30000.0,
+          industryGrowthRate: 18.5,
+          economicConditionsAtStart: "growth",
+          yearStarted: 2022,
+          customerAcquisitionRate: 25.0,
+          timeToBloom: 14.0
+        },
+        {
+          businessType: "Retail",
+          initialInvestment: 80000.0,
+          initialTeamSize: 5,
+          location: "suburban",
+          founderExperience: 3,
+          initialMarketingBudget: 15000.0,
+          industryGrowthRate: 5.2,
+          economicConditionsAtStart: "stable",
+          yearStarted: 2021,
+          customerAcquisitionRate: 45.0,
+          timeToBloom: 24.0
+        },
+        {
+          businessType: "Service-based",
+          initialInvestment: 50000.0,
+          initialTeamSize: 2,
+          location: "Chicago",
+          founderExperience: 10,
+          initialMarketingBudget: 10000.0,
+          industryGrowthRate: 7.8,
+          economicConditionsAtStart: "recession",
+          yearStarted: 2020,
+          customerAcquisitionRate: 10.0,
+          timeToBloom: 36.0
+        },
+        {
+          businessType: "E-commerce",
+          initialInvestment: 120000.0,
+          initialTeamSize: 4,
+          location: "Atlanta",
+          founderExperience: 5,
+          initialMarketingBudget: 40000.0,
+          industryGrowthRate: 22.0,
+          economicConditionsAtStart: "growth",
+          yearStarted: 2023,
+          customerAcquisitionRate: 60.0,
+          timeToBloom: 10.0
+        },
+        {
+          businessType: "Food & Beverage",
+          initialInvestment: 200000.0,
+          initialTeamSize: 8,
+          location: "rural",
+          founderExperience: 2,
+          initialMarketingBudget: 25000.0,
+          industryGrowthRate: 4.5,
+          economicConditionsAtStart: "stable",
+          yearStarted: 2022,
+          customerAcquisitionRate: 35.0,
+          timeToBloom: 18.0
+        }
+      ];
+  
+      const result = await businessCollection.insertMany(sampleBusinesses);
+      console.log(`${result.insertedCount} documents were inserted`);
+  
+      // Example query: Find average time to bloom by business type
+      const avgTimeByBusinessType = await businessCollection.aggregate([
+        {
+          $group: {
+            _id: "$businessType",
+            avgTimeToBloom: { $avg: "$timeToBloom" }
+          }
+        },
+        {
+          $sort: { avgTimeToBloom: 1 }
+        }
+      ]).toArray();
+      
+      console.log("Average time to bloom by business type:");
+      console.log(avgTimeByBusinessType);
+  
+      // Example query: Find correlation between initial investment and time to bloom
+      const correlationData = await businessCollection.aggregate([
+        {
+          $project: {
+            businessType: 1,
+            initialInvestment: 1,
+            timeToBloom: 1
+          }
+        },
+        {
+          $sort: { initialInvestment: 1 }
+        }
+      ]).toArray();
+      
+      console.log("Data for correlation analysis:");
+      console.log(correlationData);
+  
+      // Example query: Find businesses that bloomed quickly (less than 15 months)
+      const quickBloomers = await businessCollection.find({ 
+        timeToBloom: { $lt: 15 } 
+      }).toArray();
+      
+      console.log("Businesses that bloomed quickly:");
+      console.log(quickBloomers);
+  
+      // Example: Create a function to insert new business data
+      async function insertNewBusiness(businessData) {
+        const result = await businessCollection.insertOne(businessData);
+        return result.insertedId;
+      }
+  
+      // Example: Create a function to predict time to bloom based on similar businesses
+      async function predictTimeToBloom(businessData) {
+        // Find similar businesses based on business type and similar investment amount
+        const similarBusinesses = await businessCollection.find({
+          businessType: businessData.businessType,
+          initialInvestment: {
+            $gte: businessData.initialInvestment * 0.7,
+            $lte: businessData.initialInvestment * 1.3
+          }
+        }).toArray();
+        
+        if (similarBusinesses.length === 0) {
+          return "Not enough data to make a prediction";
+        }
+        
+        // Calculate average time to bloom from similar businesses
+        const totalTimeToBloom = similarBusinesses.reduce((sum, business) => sum + business.timeToBloom, 0);
+        const avgTimeToBloom = totalTimeToBloom / similarBusinesses.length;
+        
+        // Apply adjustments based on other factors (simplified)
+        let adjustmentFactor = 1.0;
+        
+        // Adjust based on founder experience (more experience = faster bloom)
+        if (businessData.founderExperience > 5) {
+          adjustmentFactor *= 0.9;
+        } else {
+          adjustmentFactor *= 1.1;
+        }
+        
+        // Adjust based on industry growth rate (higher growth = faster bloom)
+        if (businessData.industryGrowthRate > 10) {
+          adjustmentFactor *= 0.85;
+        } else {
+          adjustmentFactor *= 1.05;
+        }
+        
+        return avgTimeToBloom * adjustmentFactor;
+      }
+  
+      // Example usage of the prediction function
+      const newBusinessData = {
+        businessType: "SaaS",
+        initialInvestment: 130000.0,
+        initialTeamSize: 4,
+        location: "Austin",
+        founderExperience: 6,
+        initialMarketingBudget: 35000.0,
+        industryGrowthRate: 15.0,
+        economicConditionsAtStart: "growth",
+        yearStarted: 2023,
+        customerAcquisitionRate: 30.0
+      };
+      
+      const predictedTime = await predictTimeToBloom(newBusinessData);
+      console.log(`Predicted time to bloom for the new business: ${predictedTime} months`);
+  
+    } finally {
+      await client.close();
+    }
+  }
+  
+  run().catch(console.dir);
+  
+  // Example of a mongoose schema if using with Express
+  /*
+  const mongoose = require('mongoose');
+  
+  const businessSchema = new mongoose.Schema({
+    businessType: {
+      type: String,
+      required: true
+    },
+    initialInvestment: {
+      type: Number,
+      required: true
+    },
+    initialTeamSize: {
+      type: Number,
+      required: true
+    },
+    location: {
+      type: String,
+      required: true
+    },
+    founderExperience: {
+      type: Number,
+      required: true
+    },
+    initialMarketingBudget: {
+      type: Number,
+      required: true
+    },
+    industryGrowthRate: {
+      type: Number,
+      required: true
+    },
+    economicConditionsAtStart: {
+      type: String,
+      required: true
+    },
+    yearStarted: {
+      type: Number,
+      required: true
+    },
+    customerAcquisitionRate: {
+      type: Number,
+      required: true
+    },
+    timeToBloom: {
+      type: Number,
+      required: true
+    }
+  });
+  
+  const Business = mongoose.model('Business', businessSchema);
+  module.exports = Business;
+  */
+// Creating indexes for better query performance
+db.digitalMarketing.createIndex({ name: 1 });
+db.traditionalMarketing.createIndex({ name: 1 });
+db.directMarketing.createIndex({ name: 1 });
+db.experientialMarketing.createIndex({ name: 1 });
+db.b2bMarketing.createIndex({ name: 1 });
+db.b2cMarketing.createIndex({ name: 1 });
+db.nicheMarketing.createIndex({ name: 1 });
+
+// Find all digital marketers and their image URLs
+db.digitalMarketing.find({}, { name: 1, imageUrl: 1 });
+
+// Find traditional marketers with folder organization
+db.traditionalMarketing.find({}, { name: 1, imageFolder: 1, imageFileName: 1 });
+
+// Find image URL of a specific B2B marketer
+db.b2bMarketing.findOne({ name: "naveen" }, { imageUrl: 1 });
+
+// Find all experiential marketers with their image URLs sorted by price
+db.experientialMarketing.find({}, { name: 1, imageUrl: 1, price: 1 }).sort({ price: -1 });
+  // Transactions collection - for fast lookups
+db.transactions.createIndex({ userId: 1, date: -1 })
+db.transactions.createIndex({ category: 1 })
+
+// Users collection - for authentication
+db.users.createIndex({ email: 1 }, { unique: true })
+
+// For location-based queries
+db.users.createIndex({ "location.coordinates": "2dsphere" })
+
+// For market insights
+db.market_insights.createIndex({ industry: 1, region: 1, timestamp: -1 })
+
+// For searching government schemes
+db.government_schemes.createIndex({ region: 1, industry: 1 })
+db.government_schemes.createIndex({ name: "text", description: "text" })
+
+// For feedback analysis
+db.feedback_analysis.createIndex({ sentiment: 1 })
+db.feedback_analysis.createIndex({ userId: 1, date: -1 })
+
+// Users authentication with social media
+db.users.createIndex({ authType: 1, email: 1 })
+
+// GST validation
+db.users.createIndex({ gstNumber: 1 })
+
+// For location-based ML predictions
+db.location_analysis.createIndex({ coordinates: "2dsphere" })
+db.location_analysis.createIndex({ successProbability: -1 })
+
+// For restocking alerts
+db.restocking_alerts.createIndex({ userId: 1, urgencyLevel: 1, status: 1 })
+
+// For NLP analysis of customer feedback
+db.customer_feedback.createIndex({ "nlpAnalysis.sentiment": 1 })
+db.customer_feedback.createIndex({ "nlpAnalysis.topics": 1 })
+
+// For compliance tracking
+db.legal_compliance.createIndex({ userId: 1, deadline: 1, status: 1 })
+
+// For real-time financial tracking
+db.items_tracker.createIndex({ userId: 1, date: -1 })
+db.items_tracker.createIndex({ userId: 1, transactionType: 1 })
+
