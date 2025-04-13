@@ -3,7 +3,7 @@ ScaleUP: Business Management & Forecasting Platform:
 
 This project is a robust, end-to-end business management system that combines sentiment analysis, financial monitoring, user authentication, and AI-based business forecasting features. It is developed with Python for the backend (ML & NLP), Flutter for the frontend (UI), and features support for real-time data handling and decision-making capabilities.
 
-#👨‍💻Features
+*👨‍💻Features*
 Authentication & Onboarding
 Sign In with:
 Google
@@ -19,7 +19,7 @@ Profile Photo
 Company Details:
 Name, Address, Nature (Primary to Quinary), Type (Domain), Target Audience (Age, Gender, City), GST Number (validated)
 
-#💲Finance Tracker
+*💲Finance Tracker*
 Real-Time Cash Flow Monitoring
 Manual Entry:
 Item Name
@@ -32,7 +32,7 @@ Investments Made & Received
 Business Reports Generator (PDF format)
 Business Milestone Tracker
 
-#🤖AI & Machine Learning
+*🤖AI & Machine Learning*
 Sentiment Analysis:
 Developed with Python NLP
 
@@ -54,7 +54,7 @@ Automated Restocking Alerts:
 
 Based on analysis of sales patterns
 
-#👨‍💼Business Intelligence
+*👨‍💼Business Intelligence*
 Market Research Summaries (through scraping or APIs)
 Brand Building Strategy Recommender:
 Provides profit margin-based strategies
@@ -65,7 +65,7 @@ Govt. Scheme & Grant Recommender:
 Matches schemes available with your sector
 Legal Compliance Assistant
 
-#📱Technologies Used
+*📱Technologies Used*
 Frontend: Flutter
 Backend/ML: Python
 ML Models: Decision Trees, Sentiment Analysis (NLP)
