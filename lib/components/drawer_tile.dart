@@ -1,0 +1,36 @@
+import 'package:flutter/material.dart';
+class DrawerTile extends StatefulWidget {
+
+  final String text;
+  final IconData? icon;
+  final void Function()? onTap;
+
+  const DrawerTile({super.key,
+  required this.text,
+  required this.icon,
+  required this.onTap,
+  });
+
+  @override
+  State<DrawerTile> createState() => _DrawerTileState();
+}
+
+class _DrawerTileState extends State<DrawerTile> {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 25.0),
+      child: ListTile(
+        title: Text(
+          widget.text,
+          style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),
+        ),
+        leading: Icon(
+          widget.icon,
+          color: Theme.of(context).colorScheme.inversePrimary,
+        ),
+        onTap: widget.onTap,
+      ),
+    );
+  }
+}
